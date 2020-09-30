@@ -1,4 +1,4 @@
-package com.kozin.weatherkotlin.data.response
+package com.kozin.weatherkotlin.data.response.future
 
 data class Coord(
     val lat: Double,

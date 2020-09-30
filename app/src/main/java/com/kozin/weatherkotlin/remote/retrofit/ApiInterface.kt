@@ -1,7 +1,8 @@
 package com.kozin.weatherkotlin.remote.retrofit
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.kozin.weatherkotlin.data.response.CurrentWeatherEntry
+import com.kozin.weatherkotlin.data.response.current.CurrentWeatherEntry
+import com.kozin.weatherkotlin.data.response.future.FutureWeatherEntry
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Response
@@ -22,7 +23,12 @@ interface ApiInterface {
         @Query("units") units: String = "metric"
     ): Response<CurrentWeatherEntry>
 
-
+    @GET(value = "forecast")
+    suspend fun getFutureWeather(
+        @Query("q") location: String,
+        @Query("lang") languageCode: String = "en",
+        @Query("units") units: String = "metric"
+    ): Response<FutureWeatherEntry>
 
     companion object {
         operator fun invoke(): ApiInterface {

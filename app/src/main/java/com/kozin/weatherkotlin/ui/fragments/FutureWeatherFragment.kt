@@ -58,7 +58,7 @@ class FutureWeatherFragment : Fragment() {
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(p0: Place) {
                 autocompleteCityName = p0.name.toString()
-                refreshData()
+//                refreshData()
             }
 
             override fun onError(p0: Status) {
@@ -69,7 +69,7 @@ class FutureWeatherFragment : Fragment() {
     }
 
     private fun refreshData() {
-        viewModel.getCurrentWeather(autocompleteCityName, "en", "metric").observe(viewLifecycleOwner, {
+        viewModel.getFutureWeatherByName(autocompleteCityName, "en", "metric").observe(viewLifecycleOwner, {
             it?.let {resource ->
                 when (resource.status) {
                     Resource.Status.SUCCESS -> {
@@ -100,7 +100,6 @@ class FutureWeatherFragment : Fragment() {
             }
         })
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

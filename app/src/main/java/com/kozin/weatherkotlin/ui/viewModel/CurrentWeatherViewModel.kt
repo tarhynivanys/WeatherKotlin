@@ -18,9 +18,10 @@ class CurrentWeatherViewModel() : ViewModel() {
         Dispatchers.IO) {
         emit(Resource.loading(data = null))
         try {
-            emit(Resource.success(data = repository.getWeather(location, languageCode, metric)))
+            emit(Resource.success(data = repository.getCurrentWeatherByName(location, languageCode, metric)))
         } catch (e: Exception) {
             emit(Resource.error(data = null, message = e.message ?: "Error Occurred!"))
         }
     }
+
 }

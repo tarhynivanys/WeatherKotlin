@@ -1,4 +1,4 @@
-package com.kozin.weatherkotlin.data.response
+package com.kozin.weatherkotlin.data.response.current
 
 data class Weather(
     val description: String,
