@@ -26,8 +26,6 @@ class FutureWeatherFragment : Fragment() {
     private var _binding: FragmentFutureWeatherBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: FutureWeatherViewModel
-    private lateinit var autocompleteCityName: String
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +43,6 @@ class FutureWeatherFragment : Fragment() {
     }
 
     private fun setUpViewModel() {
-
         viewModel = ViewModelProvider(this).get(FutureWeatherViewModel::class.java)
     }
 
@@ -54,11 +51,10 @@ class FutureWeatherFragment : Fragment() {
     }
 
     private fun refreshData() {
-        viewModel.getFutureWeatherByName(autocompleteCityName, "en", "metric").observe(viewLifecycleOwner, {
+        viewModel.getFutureWeatherByName(CurrentWeatherFragment().autocomplete_fragment.getString(0), "en", "metric").observe(viewLifecycleOwner, {
             it?.let {resource ->
                 when (resource.status) {
                     Resource.Status.SUCCESS -> {
-                        recyclerAdapter.setMovieListItems(response.body()!!)
                         rlWeather.visibility = View.VISIBLE
                         progressBar.visibility = View.GONE
                     }
