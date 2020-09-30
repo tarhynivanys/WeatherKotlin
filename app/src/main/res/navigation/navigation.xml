@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/currentWeatherFragment">
+
+    <fragment
+        android:id="@+id/googleMapFragment"
+        android:name="com.kozin.weatherkotlin.ui.fragments.GoogleMapFragment"
+        android:label="Google Map"
+        tools:layout="@layout/fragment_google_map" />
+    <fragment
+        android:id="@+id/futureWeatherFragment"
+        android:name="com.kozin.weatherkotlin.ui.fragments.FutureWeatherFragment"
+        android:label="Weather Forecast"
+        tools:layout="@layout/fragment_future_weather" />
+    <fragment
+        android:id="@+id/currentWeatherFragment"
+        android:name="com.kozin.weatherkotlin.ui.fragments.CurrentWeatherFragment"
+        android:label="Today's Weather"
+        tools:layout="@layout/fragment_current_weather"/>
+
+</navigation>
