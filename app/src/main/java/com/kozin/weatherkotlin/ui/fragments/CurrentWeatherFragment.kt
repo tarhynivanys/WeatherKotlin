@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
@@ -17,6 +20,7 @@ import com.kozin.weatherkotlin.R
 import com.kozin.weatherkotlin.databinding.FragmentCurrentWeatherBinding
 import com.kozin.weatherkotlin.ui.viewModel.CurrentWeatherViewModel
 import com.kozin.weatherkotlin.utils.Resource
+import com.kozin.weatherkotlin.utils.SessionManager
 import kotlinx.android.synthetic.main.fragment_current_weather.*
 import timber.log.Timber
 
@@ -27,19 +31,22 @@ class CurrentWeatherFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: CurrentWeatherViewModel
     private lateinit var autocompleteCityName: String
-
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentCurrentWeatherBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         Places.initialize(requireContext(), "AIzaSyATiSBmiHuJsMnVkwb0K2YDosHMNE6G6Jo")
+
+        sessionManager = SessionManager(requireContext())
 
         setUpViewModel()
         setupUI()
@@ -52,14 +59,21 @@ class CurrentWeatherFragment : Fragment() {
     private fun setupUI() {
         val autocompleteFragment =
             childFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
-        autocompleteFragment.setTypeFilter(TypeFilter.CITIES);
+        autocompleteFragment.setTypeFilter(TypeFilter.CITIES)
         autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME))
 
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(p0: Place) {
                 autocompleteCityName = p0.name.toString()
 
+                sessionManager.saveCityName(autocompleteCityName)
+
+//                val bundle = bundleOf("cityName" to autocompleteCityName)
+//                view?.findNavController()?.navigate(R.id., bundle)
                 refreshData()
+//                val args = Bundle()
+//                args.putString("cityName", autocompleteCityName)
+//                findNavController().navigate(R.id.confirmationAction, args)
             }
 
             override fun onError(p0: Status) {

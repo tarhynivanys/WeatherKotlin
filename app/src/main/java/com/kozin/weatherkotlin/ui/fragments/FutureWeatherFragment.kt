@@ -14,6 +14,7 @@ import com.kozin.weatherkotlin.databinding.FragmentFutureWeatherBinding
 import com.kozin.weatherkotlin.ui.adapter.RecyclerViewAdapter
 import com.kozin.weatherkotlin.ui.viewModel.FutureWeatherViewModel
 import com.kozin.weatherkotlin.utils.Resource
+import com.kozin.weatherkotlin.utils.SessionManager
 import kotlinx.android.synthetic.main.fragment_future_weather.*
 
 class FutureWeatherFragment : Fragment() {
@@ -22,6 +23,7 @@ class FutureWeatherFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: FutureWeatherViewModel
     private lateinit var adapter: RecyclerViewAdapter
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +35,8 @@ class FutureWeatherFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        sessionManager = SessionManager(requireContext())
 
         setUpViewModel()
         setupUI()
@@ -57,11 +61,11 @@ class FutureWeatherFragment : Fragment() {
 
 
     private fun refreshData() {
-        viewModel.getFutureWeatherByName("London", "en", "metric").observe(viewLifecycleOwner, {
+        val args = sessionManager.fetchCityName()
+        viewModel.getFutureWeatherByName(args!!, "en", "metric").observe(viewLifecycleOwner, {
             it?.let {resource ->
                 when (resource.status) {
                     Resource.Status.SUCCESS -> {
-                        Log.i("WTF", "${it.data}")
                         adapter = RecyclerViewAdapter(it.data?.data!!)
                         binding.rvRecyclerView.adapter = adapter
                         futureProgressBar.visibility = View.GONE
