@@ -58,6 +58,7 @@ class CurrentWeatherFragment : Fragment() {
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(p0: Place) {
                 autocompleteCityName = p0.name.toString()
+
                 refreshData()
             }
 

@@ -14,4 +14,12 @@
         android:padding="@dimen/padding"
         tools:listitem="@layout/custom_row" />
 
+    <ProgressBar
+        android:id="@+id/futureProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"/>
+
 </RelativeLayout>

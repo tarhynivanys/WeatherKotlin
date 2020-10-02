@@ -1,31 +1,27 @@
 package com.kozin.weatherkotlin.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
-import com.google.android.gms.common.api.Status
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.TypeFilter
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.kozin.weatherkotlin.R
-import com.kozin.weatherkotlin.databinding.FragmentCurrentWeatherBinding
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.kozin.weatherkotlin.data.response.future.FutureWeatherEntry
 import com.kozin.weatherkotlin.databinding.FragmentFutureWeatherBinding
-import com.kozin.weatherkotlin.ui.viewModel.CurrentWeatherViewModel
+import com.kozin.weatherkotlin.ui.adapter.RecyclerViewAdapter
 import com.kozin.weatherkotlin.ui.viewModel.FutureWeatherViewModel
 import com.kozin.weatherkotlin.utils.Resource
-import kotlinx.android.synthetic.main.fragment_current_weather.*
+import kotlinx.android.synthetic.main.fragment_future_weather.*
 
 class FutureWeatherFragment : Fragment() {
 
     private var _binding: FragmentFutureWeatherBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: FutureWeatherViewModel
+    private lateinit var adapter: RecyclerViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,23 +44,36 @@ class FutureWeatherFragment : Fragment() {
 
     private fun setupUI() {
 
+        initRecyclerView()
+        refreshData()
+
     }
 
+    private fun initRecyclerView(){
+
+        binding.rvRecyclerView.layoutManager = LinearLayoutManager(this.context)
+
+    }
+
+
     private fun refreshData() {
-        viewModel.getFutureWeatherByName(CurrentWeatherFragment().autocomplete_fragment.getString(0), "en", "metric").observe(viewLifecycleOwner, {
+        viewModel.getFutureWeatherByName("London", "en", "metric").observe(viewLifecycleOwner, {
             it?.let {resource ->
                 when (resource.status) {
                     Resource.Status.SUCCESS -> {
-                        rlWeather.visibility = View.VISIBLE
-                        progressBar.visibility = View.GONE
+                        Log.i("WTF", "${it.data}")
+                        adapter = RecyclerViewAdapter(it.data?.data!!)
+                        binding.rvRecyclerView.adapter = adapter
+                        futureProgressBar.visibility = View.GONE
                     }
                     Resource.Status.ERROR -> {
-                        rlWeather.visibility = View.VISIBLE
-                        progressBar.visibility = View.GONE
+                        Toast.makeText(this.context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                        futureProgressBar.visibility = View.GONE
                     }
                     Resource.Status.LOADING -> {
-                        progressBar.visibility = View.VISIBLE
-                        rlWeather.visibility = View.GONE
+
+                        futureProgressBar.visibility = View.VISIBLE
+
                     }
                 }
             }
