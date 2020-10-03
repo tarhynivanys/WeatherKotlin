@@ -1,5 +1,6 @@
 package com.kozin.weatherkotlin.data.response.future
 
+
 data class FutureWeatherEntry(
     val city: City,
     val cnt: Double,

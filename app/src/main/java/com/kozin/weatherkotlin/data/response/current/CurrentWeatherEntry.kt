@@ -1,5 +1,6 @@
 package com.kozin.weatherkotlin.data.response.current
 
+
 data class CurrentWeatherEntry(
     val base: String,
     val clouds: Clouds,

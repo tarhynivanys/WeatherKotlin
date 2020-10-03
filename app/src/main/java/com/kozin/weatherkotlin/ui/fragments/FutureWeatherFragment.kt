@@ -62,7 +62,8 @@ class FutureWeatherFragment : Fragment() {
 
     private fun refreshData() {
         val args = sessionManager.fetchCityName()
-        viewModel.getFutureWeatherByName(args!!, "en", "metric").observe(viewLifecycleOwner, {
+        Log.i("MASAG", args!!)
+        viewModel.getFutureWeatherByName(args, "en", "metric").observe(viewLifecycleOwner, {
             it?.let {resource ->
                 when (resource.status) {
                     Resource.Status.SUCCESS -> {

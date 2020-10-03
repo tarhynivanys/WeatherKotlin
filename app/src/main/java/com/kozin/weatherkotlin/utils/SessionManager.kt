@@ -9,6 +9,7 @@ class SessionManager(context: Context) {
 
     companion object {
         const val CITY_NAME = "city_name"
+        const val CITY_LAT_LNG = "city_lat_lng"
     }
 
     fun saveCityName(keys: String) {
@@ -19,5 +20,15 @@ class SessionManager(context: Context) {
 
     fun fetchCityName(): String? {
         return prefs.getString(CITY_NAME, null)
+    }
+
+    fun saveCityLatLng(keys: String) {
+        val editor = prefs.edit()
+        editor.putString(CITY_LAT_LNG, keys)
+        editor.apply()
+    }
+
+    fun fetchCityLatLng(): String? {
+        return prefs.getString(CITY_LAT_LNG, null)
     }
 }

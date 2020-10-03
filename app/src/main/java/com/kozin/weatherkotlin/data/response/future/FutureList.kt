@@ -1,5 +1,6 @@
 package com.kozin.weatherkotlin.data.response.future
 
+
 data class FutureList(
     val clouds: Clouds,
     val dt: Double,

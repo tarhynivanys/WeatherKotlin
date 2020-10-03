@@ -17,18 +17,26 @@ const val BASE_URL = "http://api.openweathermap.org/data/2.5/"
 interface ApiInterface {
 
     @GET(value = "weather")
-    suspend fun getCurrentWeather(
+    suspend fun getCurrentWeatherByCityName(
         @Query("q") location: String,
         @Query("lang") languageCode: String = "en",
         @Query("units") units: String = "metric"
     ): Response<CurrentWeatherEntry>
 
     @GET(value = "forecast")
-    suspend fun getFutureWeather(
+    suspend fun getFutureWeatherByCityName(
         @Query("q") location: String,
         @Query("lang") languageCode: String = "en",
         @Query("units") units: String = "metric"
     ): Response<FutureWeatherEntry>
+
+    @GET(value = "weather")
+    suspend fun getCurrentWeatherByLatLng(
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
+        @Query("lang") languageCode: String = "en",
+        @Query("units") units: String = "metric"
+    ): Response<CurrentWeatherEntry>
 
     companion object {
         operator fun invoke(): ApiInterface {
