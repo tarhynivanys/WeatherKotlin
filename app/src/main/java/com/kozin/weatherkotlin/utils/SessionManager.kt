@@ -22,6 +22,13 @@ class SessionManager(context: Context) {
         return prefs.getString(CITY_NAME, null)
     }
 
+    fun deleteCityName()
+    {
+        val editor = prefs.edit()
+        editor.clear()
+        editor.apply()
+    }
+
     fun saveCityLatLng(keys: String) {
         val editor = prefs.edit()
         editor.putString(CITY_LAT_LNG, keys)

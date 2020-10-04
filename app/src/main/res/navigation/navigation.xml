@@ -26,9 +26,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
         android:name="com.kozin.weatherkotlin.ui.fragments.CurrentWeatherFragment"
         android:label="Today's Weather"
         tools:layout="@layout/fragment_current_weather">
-        <action
-            android:id="@+id/action_currentWeatherFragment_to_futureWeatherFragment2"
-            app:destination="@id/futureWeatherFragment" />
+
     </fragment>
 
 </navigation>

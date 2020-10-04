@@ -25,6 +25,8 @@ class FutureWeatherFragment : Fragment() {
     private lateinit var adapter: RecyclerViewAdapter
     private lateinit var sessionManager: SessionManager
 
+    private var args: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,9 +49,10 @@ class FutureWeatherFragment : Fragment() {
     }
 
     private fun setupUI() {
-
         initRecyclerView()
-        refreshData()
+
+        args = sessionManager.fetchCityName()
+        args?.let { refreshData(args!!) }
 
     }
 
@@ -60,10 +63,9 @@ class FutureWeatherFragment : Fragment() {
     }
 
 
-    private fun refreshData() {
-        val args = sessionManager.fetchCityName()
-        Log.i("MASAG", args!!)
-        viewModel.getFutureWeatherByName(args, "en", "metric").observe(viewLifecycleOwner, {
+    private fun refreshData(cityName: String) {
+
+        viewModel.getFutureWeatherByName(cityName, "en", "metric").observe(viewLifecycleOwner, {
             it?.let {resource ->
                 when (resource.status) {
                     Resource.Status.SUCCESS -> {
@@ -89,6 +91,7 @@ class FutureWeatherFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
     }
 
 }

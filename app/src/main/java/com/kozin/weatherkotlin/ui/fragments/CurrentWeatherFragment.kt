@@ -29,6 +29,8 @@ class CurrentWeatherFragment : Fragment() {
     private lateinit var autocompleteCityName: String
     private lateinit var sessionManager: SessionManager
 
+    private var args: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,13 +45,16 @@ class CurrentWeatherFragment : Fragment() {
         Places.initialize(requireContext(), "AIzaSyATiSBmiHuJsMnVkwb0K2YDosHMNE6G6Jo")
 
         sessionManager = SessionManager(requireContext())
-        val args = sessionManager.fetchCityLatLng()
-        setUpViewModel()
-        if (args != null){
-            refreshData(args)
 
-        }
+        args = sessionManager.fetchCityLatLng()
+        setUpViewModel()
+
         setupUI()
+
+        args?.let { refreshData(args!!) }
+
+        args = sessionManager.deleteCityName().toString()
+
     }
 
     private fun setUpViewModel() {
@@ -97,6 +102,8 @@ class CurrentWeatherFragment : Fragment() {
                                 tvValueFeelsLike.text = currentWeather.data.main.feels_like.toString()
                                 tvValueHumidity.text = currentWeather.data.main.humidity.toString()
                                 tvValuePressure.text = currentWeather.data.main.pressure.toString()
+
+
                             }
                         }
                     }
@@ -117,6 +124,7 @@ class CurrentWeatherFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
     }
 
 }

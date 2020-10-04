@@ -24,7 +24,6 @@ import com.kozin.weatherkotlin.utils.SessionManager
 
 class GoogleMapFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
 
-    private lateinit var map: GoogleMap
     private lateinit var marker1: Marker
 
     private var _binding: FragmentGoogleMapBinding? = null
