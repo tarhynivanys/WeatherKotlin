@@ -45,8 +45,12 @@ class CurrentWeatherFragment : Fragment() {
         Places.initialize(requireContext(), "AIzaSyATiSBmiHuJsMnVkwb0K2YDosHMNE6G6Jo")
 
         sessionManager = SessionManager(requireContext())
-
+        val args = sessionManager.fetchCityLatLng()
         setUpViewModel()
+        if (args != null){
+            refreshData(args)
+
+        }
         setupUI()
     }
 
@@ -64,9 +68,7 @@ class CurrentWeatherFragment : Fragment() {
             override fun onPlaceSelected(p0: Place) {
                 autocompleteCityName = p0.name.toString()
 
-                sessionManager.saveCityName(autocompleteCityName)
-
-                refreshData()
+                refreshData(autocompleteCityName)
             }
 
             override fun onError(p0: Status) {
@@ -76,11 +78,9 @@ class CurrentWeatherFragment : Fragment() {
 
     }
 
-    private fun refreshData() {
-        val args = sessionManager.fetchCityLatLng()
-//        Log.i("MASAG", args!!)
-//        Toast.makeText(requireContext(), args, Toast.LENGTH_SHORT).show()
-        viewModel.getCurrentWeather(autocompleteCityName, "en", "metric").observe(viewLifecycleOwner, {
+    private fun refreshData(cityName: String) {
+
+        viewModel.getCurrentWeather(cityName, "en", "metric").observe(viewLifecycleOwner, {
             it?.let {resource ->
                 when (resource.status) {
                     Resource.Status.SUCCESS -> {
@@ -88,6 +88,9 @@ class CurrentWeatherFragment : Fragment() {
                         progressBar.visibility = View.GONE
                         it.data?.let { currentWeather ->
                             binding.apply {
+
+                                sessionManager.saveCityName(cityName)
+
                                 tvCity.text = currentWeather.data!!.name
                                 tvCountry.text = currentWeather.data.sys.country
                                 Glide.with(requireContext()).load(StringBuilder("http://openweathermap.org/img/wn/")

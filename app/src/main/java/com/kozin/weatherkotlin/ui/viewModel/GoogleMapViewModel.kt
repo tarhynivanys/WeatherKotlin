@@ -1,5 +1,6 @@
 package com.kozin.weatherkotlin.ui.viewModel
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.kozin.weatherkotlin.data.repository.WeatherRepository
 import com.kozin.weatherkotlin.remote.WeatherRemoteDataSource
@@ -8,7 +9,7 @@ import com.kozin.weatherkotlin.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import java.lang.Exception
 
-class GoogleMapViewModel {
+class GoogleMapViewModel: ViewModel() {
 
     private val apiService: ApiInterface = ApiInterface()
     private val remoteDataSource: WeatherRemoteDataSource = WeatherRemoteDataSource(apiService)
