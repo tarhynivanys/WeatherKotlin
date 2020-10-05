@@ -12,6 +12,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="map_key" translatable="false">AIzaSyBocuubdccM0sY3U6LUOtmmnyeoRSMJBpQ</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 
 </resources>

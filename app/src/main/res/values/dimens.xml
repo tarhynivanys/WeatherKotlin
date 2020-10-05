@@ -14,4 +14,5 @@
     <dimen name="cardview_txt_datetime_size">40sp</dimen>
     <dimen name="cardview_txt_size">30sp</dimen>
     <dimen name="cardview_img_size">100dp</dimen>
+
 </resources>

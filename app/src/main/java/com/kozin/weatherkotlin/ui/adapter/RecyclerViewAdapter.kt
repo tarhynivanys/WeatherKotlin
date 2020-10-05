@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kozin.weatherkotlin.R
@@ -49,8 +50,8 @@ class MyViewHolder(itemView : View): RecyclerView.ViewHolder(itemView){
         dt_txt.text = forecast.dt_txt
         desc.text = forecast.weather[0].description
         temp.text = forecast.main.temp.toString()
-//        Glide.with(requireContext()).load(StringBuilder("http://openweathermap.org/img/wn/")
-//            .append(forecast.weather[0].icon).append(".png").toString()).into(icon)
+        Glide.with(this.icon).load(StringBuilder("http://openweathermap.org/img/wn/")
+            .append(forecast.weather[0].icon).append(".png").toString()).into(icon)
 
     }
 

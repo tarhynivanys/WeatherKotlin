@@ -53,7 +53,7 @@ class CurrentWeatherFragment : Fragment() {
 
         args?.let { refreshData(args!!) }
 
-        args = sessionManager.deleteCityName().toString()
+//        args = sessionManager.deleteCityName().toString()
 
     }
 
