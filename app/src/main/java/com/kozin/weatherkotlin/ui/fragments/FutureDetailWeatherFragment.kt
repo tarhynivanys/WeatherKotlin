@@ -8,29 +8,28 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kozin.weatherkotlin.databinding.FragmentFutureWeatherBinding
-import com.kozin.weatherkotlin.ui.adapter.RecyclerViewAdapter
-import com.kozin.weatherkotlin.ui.viewModel.FutureWeatherViewModel
+import com.kozin.weatherkotlin.databinding.FragmentFutureDetailWeatherBinding
+import com.kozin.weatherkotlin.ui.adapter.DetailWeatherAdapter
+import com.kozin.weatherkotlin.ui.viewModel.FutureDetailWeatherViewModel
 import com.kozin.weatherkotlin.utils.Resource
 import com.kozin.weatherkotlin.utils.SessionManager
 import kotlinx.android.synthetic.main.fragment_future_weather.*
 
-class FutureWeatherFragment : Fragment() {
+class FutureDetailWeatherFragment : Fragment() {
 
-    private var _binding: FragmentFutureWeatherBinding? = null
+    private var _binding: FragmentFutureDetailWeatherBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: FutureWeatherViewModel
-    private lateinit var adapter: RecyclerViewAdapter
+    private lateinit var viewModel: FutureDetailWeatherViewModel
+    private lateinit var adapter: DetailWeatherAdapter
     private lateinit var sessionManager: SessionManager
 
     private var args: String? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentFutureWeatherBinding.inflate(inflater, container, false)
+        _binding = FragmentFutureDetailWeatherBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -44,7 +43,7 @@ class FutureWeatherFragment : Fragment() {
     }
 
     private fun setUpViewModel() {
-        viewModel = ViewModelProvider(this).get(FutureWeatherViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(FutureDetailWeatherViewModel::class.java)
     }
 
     private fun setupUI() {
@@ -57,7 +56,7 @@ class FutureWeatherFragment : Fragment() {
 
     private fun initRecyclerView(){
 
-        binding.rvRecyclerView.layoutManager = LinearLayoutManager(this.context)
+        binding.rvDetailRecyclerView.layoutManager = LinearLayoutManager(this.context)
 
     }
 
@@ -68,8 +67,11 @@ class FutureWeatherFragment : Fragment() {
             it?.let {resource ->
                 when (resource.status) {
                     Resource.Status.SUCCESS -> {
-                        adapter = RecyclerViewAdapter(it.data?.data!!)
-                        binding.rvRecyclerView.adapter = adapter
+                        //adapter = DetailWeatherAdapter(it.data?.data!!)
+
+                        adapter = DetailWeatherAdapter(it.data?.data!!, arguments?.getString("key"))
+
+                        binding.rvDetailRecyclerView.adapter = adapter
                         futureProgressBar.visibility = View.GONE
                     }
                     Resource.Status.ERROR -> {

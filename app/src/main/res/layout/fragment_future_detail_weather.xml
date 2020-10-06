@@ -4,12 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rowLayout"
     android:background="#E6E6E6"
-    tools:context=".ui.fragments.FutureWeatherFragment">
+    tools:context=".ui.fragments.FutureDetailWeatherFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRecyclerView"
+        android:id="@+id/rvDetailRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding"

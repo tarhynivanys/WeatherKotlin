@@ -19,14 +19,23 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/futureWeatherFragment"
         android:name="com.kozin.weatherkotlin.ui.fragments.FutureWeatherFragment"
         android:label="Weather Forecast"
-        tools:layout="@layout/fragment_future_weather"/>
+        tools:layout="@layout/fragment_future_weather">
+        <action
+            android:id="@+id/action_futureWeatherFragment_to_futureDetailWeatherFragment"
+            app:destination="@id/futureDetailWeatherFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/currentWeatherFragment"
         android:name="com.kozin.weatherkotlin.ui.fragments.CurrentWeatherFragment"
         android:label="Today's Weather"
         tools:layout="@layout/fragment_current_weather">
-
     </fragment>
+
+    <fragment
+        android:id="@+id/futureDetailWeatherFragment"
+        android:name="com.kozin.weatherkotlin.ui.fragments.FutureDetailWeatherFragment"
+        android:label="fragment_future_detail_weather"
+        tools:layout="@layout/fragment_future_detail_weather" />
 
 </navigation>
