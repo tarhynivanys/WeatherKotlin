@@ -10,7 +10,6 @@ class SessionManager(context: Context) {
     companion object {
         const val CITY_NAME = "city_name"
         const val CITY_LAT_LNG = "city_lat_lng"
-        const val DATE = "date"
     }
 
     fun saveCityName(keys: String) {

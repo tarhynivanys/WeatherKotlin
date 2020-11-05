@@ -1,5 +1,14 @@
 package com.kozin.weatherkotlin.data.response.future
 
+import android.os.Parcelable
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import kotlinx.android.parcel.Parcelize
+
+
+@Parcelize
+@JsonClass(generateAdapter = true)
 data class Clouds(
-    val all: Double
-)
+    @Json(name = "all")
+    val all: Int?
+) : Parcelable

@@ -1,10 +1,11 @@
-package com.kozin.weatherkotlin.remote.retrofit
+package com.kozin.weatherkotlin.data.remote.retrofit
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.kozin.weatherkotlin.data.response.current.CurrentWeatherEntry
 import com.kozin.weatherkotlin.data.response.future.FutureWeatherEntry
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -42,7 +43,7 @@ interface ApiInterface {
         operator fun invoke(): ApiInterface {
             val requestInterceptor = Interceptor {
                 val url = it.request()
-                    .url()
+                    .url
                     .newBuilder()
                     .addQueryParameter("appid", API_KEY)
                     .build()
@@ -52,8 +53,12 @@ interface ApiInterface {
                     .build()
                 return@Interceptor it.proceed(request)
             }
+            val httpLoggingInterceptor = HttpLoggingInterceptor()
+            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+
             val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(requestInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
                 .build()
 
             return Retrofit.Builder()

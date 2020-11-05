@@ -1,6 +1,7 @@
-package com.kozin.weatherkotlin.remote
+package com.kozin.weatherkotlin.data.remote
 
-import com.kozin.weatherkotlin.remote.retrofit.ApiInterface
+import com.kozin.weatherkotlin.data.remote.retrofit.ApiInterface
+import com.kozin.weatherkotlin.utils.BaseDataSource
 
 class WeatherRemoteDataSource(private val weatherService: ApiInterface): BaseDataSource() {
     suspend fun getCurrentWeatherByCityName(location: String, languageCode: String, metric: String)

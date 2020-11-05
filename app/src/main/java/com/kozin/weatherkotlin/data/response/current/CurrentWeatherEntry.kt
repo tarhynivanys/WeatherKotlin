@@ -1,18 +1,50 @@
 package com.kozin.weatherkotlin.data.response.current
 
+import android.os.Parcelable
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
+@JsonClass(generateAdapter = true)
 data class CurrentWeatherEntry(
-    val base: String,
-    val clouds: Clouds,
-    val cod: Int,
-    val coord: Coord,
-    val dt: Int,
-    val id: Int,
-    val main: Main,
-    val name: String,
-    val sys: Sys,
-    val timezone: Int,
-    val visibility: Int,
-    val weather: List<Weather>,
-    val wind: Wind
-)
+
+    @Json(name = "visibility")
+    val visibility: Int? = null,
+
+    @Json(name = "timezone")
+    val timezone: Int? = null,
+
+    @Json(name = "main")
+    val main: Main? = null,
+
+    @Json(name = "clouds")
+    val clouds: Clouds? = null,
+
+    @Json(name = "sys")
+    val sys: Sys? = null,
+
+    @Json(name = "dt")
+    val dt: Int? = null,
+
+    @Json(name = "coord")
+    val coord: Coord? = null,
+
+    @Json(name = "weather")
+    val weather: List<Weather?>? = null,
+
+    @Json(name = "name")
+    val name: String? = null,
+
+    @Json(name = "cod")
+    val cod: Int? = null,
+
+    @Json(name = "id")
+    val id: Int? = null,
+
+    @Json(name = "base")
+    val base: String? = null,
+
+    @Json(name = "wind")
+    val wind: Wind? = null
+) : Parcelable

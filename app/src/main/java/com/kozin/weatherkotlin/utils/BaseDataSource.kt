@@ -1,6 +1,5 @@
-package com.kozin.weatherkotlin.remote
+package com.kozin.weatherkotlin.utils
 
-import com.kozin.weatherkotlin.utils.Resource
 import retrofit2.Response
 import timber.log.Timber
 import java.lang.Exception

@@ -1,13 +1,43 @@
 package com.kozin.weatherkotlin.data.response.future
 
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.JsonClass
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+@JsonClass(generateAdapter = true)
+
 data class Main(
-    val feels_like: Double,
-    val grnd_level: Double,
-    val humidity: Double,
-    val pressure: Double,
-    val sea_level: Double,
-    val temp: Double,
-    val temp_kf: Double,
-    val temp_max: Double,
-    val temp_min: Double
-)
+    @SerializedName("feels_like")
+    val feelsLike: Double?,
+    @SerializedName("grnd_level")
+    val grndLevel: Double?,
+    val humidity: Int?,
+    val pressure: Double?,
+    @SerializedName("sea_level")
+    val seaLevel: Double?,
+    val temp: Double?,
+    @SerializedName("temp_kf")
+    val tempKf: Double?,
+    @SerializedName("temp_max")
+    var tempMax: Double?,
+    @SerializedName("temp_min")
+    var tempMin: Double?
+) : Parcelable {
+    fun getTempString(): String {
+        return temp.toString().substringBefore(".") + "°"
+    }
+
+    fun getHumidityString(): String {
+        return humidity.toString() + "°"
+    }
+
+    fun getTempMinString(): String {
+        return tempMin.toString().substringBefore(".") + "°"
+    }
+
+    fun getTempMaxString(): String {
+        return tempMax.toString().substringBefore(".") + "°"
+    }
+}

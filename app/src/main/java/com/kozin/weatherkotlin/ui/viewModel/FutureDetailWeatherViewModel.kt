@@ -1,28 +1,34 @@
 package com.kozin.weatherkotlin.ui.viewModel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import com.kozin.weatherkotlin.data.repository.WeatherRepository
-import com.kozin.weatherkotlin.remote.WeatherRemoteDataSource
-import com.kozin.weatherkotlin.remote.retrofit.ApiInterface
+import android.app.Application
+import androidx.databinding.ObservableField
+import androidx.lifecycle.*
+import com.kozin.weatherkotlin.data.entities.ForecastEntity
+import com.kozin.weatherkotlin.data.local.FutureWeatherLocalDataSource
+import com.kozin.weatherkotlin.data.local.db.WeatherDatabase
+import com.kozin.weatherkotlin.data.repository.CurrentWeatherRepository
+import com.kozin.weatherkotlin.data.remote.WeatherRemoteDataSource
+import com.kozin.weatherkotlin.data.remote.retrofit.ApiInterface
+import com.kozin.weatherkotlin.data.repository.FutureWeatherRepository
+import com.kozin.weatherkotlin.data.response.future.InfoDay
 import com.kozin.weatherkotlin.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import java.lang.Exception
 
-class FutureDetailWeatherViewModel() : ViewModel() {
+class FutureDetailWeatherViewModel(application: Application) : AndroidViewModel(application) {
 
     private val apiService: ApiInterface = ApiInterface()
     private val remoteDataSource: WeatherRemoteDataSource = WeatherRemoteDataSource(apiService)
-    private val repository: WeatherRepository = WeatherRepository(remoteDataSource)
+    private val weatherDao = WeatherDatabase.getDatabase(application).futureDao()
+    private val forecastLocalDataSource = FutureWeatherLocalDataSource(weatherDao)
+    private val repository = FutureWeatherRepository(remoteDataSource, forecastLocalDataSource)
 
-    fun getFutureWeatherByName(location: String, languageCode: String, metric: String) = liveData(
-        Dispatchers.IO) {
-        emit(Resource.loading(data = null))
-        try {
-            emit(Resource.success(data = repository.getFutureWeatherByName(location, languageCode, metric)))
-        } catch (e: Exception) {
-            emit(Resource.error(data = null, message = e.message ?: "Error Occurred!"))
-        }
+    var weatherItem: ObservableField<InfoDay> = ObservableField()
+    var selectedDayDate: String? = null
+    var selectedDayForecastLiveData: MutableLiveData<List<InfoDay>> = MutableLiveData()
+
+    fun getForecast(): LiveData<ForecastEntity> {
+        return repository.getForecast()
     }
 
 }

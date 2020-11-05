@@ -1,27 +1,40 @@
 package com.kozin.weatherkotlin.ui.viewModel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import com.kozin.weatherkotlin.data.repository.WeatherRepository
-import com.kozin.weatherkotlin.remote.WeatherRemoteDataSource
-import com.kozin.weatherkotlin.remote.retrofit.ApiInterface
+import android.app.Application
+import androidx.lifecycle.*
+import com.kozin.weatherkotlin.data.entities.CurrentWeatherEntity
+import com.kozin.weatherkotlin.data.local.CurrentWeatherLocalDataSource
+import com.kozin.weatherkotlin.data.local.db.WeatherDatabase
+import com.kozin.weatherkotlin.data.repository.CurrentWeatherRepository
+import com.kozin.weatherkotlin.data.remote.WeatherRemoteDataSource
+import com.kozin.weatherkotlin.data.remote.retrofit.ApiInterface
 import com.kozin.weatherkotlin.utils.Resource
+import com.kozin.weatherkotlin.utils.WeatherUseCase
 import kotlinx.coroutines.Dispatchers
 import java.lang.Exception
 
-class CurrentWeatherViewModel() : ViewModel() {
+class CurrentWeatherViewModel(application: Application) : AndroidViewModel(application) {
+
     private val apiService: ApiInterface = ApiInterface()
     private val remoteDataSource: WeatherRemoteDataSource = WeatherRemoteDataSource(apiService)
-    private val repository: WeatherRepository = WeatherRepository(remoteDataSource)
+    private val weatherDao = WeatherDatabase.getDatabase(application).currentDao()
+    private val localDataSource = CurrentWeatherLocalDataSource(weatherDao)
+    private val repository = CurrentWeatherRepository(remoteDataSource, localDataSource)
 
-    fun getCurrentWeather(location: String, languageCode: String, metric: String) = liveData(
-        Dispatchers.IO) {
-        emit(Resource.loading(data = null))
-        try {
-            emit(Resource.success(data = repository.getCurrentWeatherByName(location, languageCode, metric)))
-        } catch (e: Exception) {
-            emit(Resource.error(data = null, message = e.message ?: "Error Occurred!"))
-        }
+    private val _params: MutableLiveData<WeatherUseCase.WeatherParams> = MutableLiveData()
+
+    fun fetchData(): LiveData<CurrentWeatherEntity> = localDataSource.getCurrentWeather()
+
+    fun setCurrentWeatherParams(params: WeatherUseCase.WeatherParams) {
+        if (_params.value == params)
+            return
+        _params.postValue(params)
     }
+
+    private val _weather = _params.switchMap {
+        repository.getCurrentWeatherByName(it._location, it._languageCode, it._units)
+    }
+
+    val weather: LiveData<Resource<CurrentWeatherEntity>> =_weather
 
 }

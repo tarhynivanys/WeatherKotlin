@@ -7,24 +7,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kozin.weatherkotlin.data.response.future.InfoDay
 import com.kozin.weatherkotlin.databinding.FragmentFutureWeatherBinding
-import com.kozin.weatherkotlin.ui.adapter.RecyclerViewAdapter
+import com.kozin.weatherkotlin.ui.adapter.ForecastAdapter
 import com.kozin.weatherkotlin.ui.viewModel.FutureWeatherViewModel
 import com.kozin.weatherkotlin.utils.Resource
 import com.kozin.weatherkotlin.utils.SessionManager
-import kotlinx.android.synthetic.main.fragment_future_weather.*
+import com.kozin.weatherkotlin.utils.WeatherUseCase
+import com.kozin.weatherkotlin.utils.dataTransformation.ForecastMapper
 
-class FutureWeatherFragment : Fragment() {
+class FutureWeatherFragment : Fragment(), ForecastAdapter.WeatherItemListener {
 
     private var _binding: FragmentFutureWeatherBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: FutureWeatherViewModel
-    private lateinit var adapter: RecyclerViewAdapter
+    private lateinit var adapter: ForecastAdapter
     private lateinit var sessionManager: SessionManager
-
-    private var args: String? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,53 +37,52 @@ class FutureWeatherFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        sessionManager = SessionManager(requireContext())
-
         setUpViewModel()
-        setupUI()
+        refreshData()
     }
 
     private fun setUpViewModel() {
+        sessionManager = SessionManager(requireContext())
         viewModel = ViewModelProvider(this).get(FutureWeatherViewModel::class.java)
-    }
-
-    private fun setupUI() {
-        initRecyclerView()
-
-        args = sessionManager.fetchCityName()
-        args?.let { refreshData(args!!) }
+        adapter = ForecastAdapter(null, this)
+        binding.rvRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
     }
 
-    private fun initRecyclerView(){
+    private fun refreshData() {
 
-        binding.rvRecyclerView.layoutManager = LinearLayoutManager(this.context)
+        val cityName: String = sessionManager.fetchCityName()!!
 
-    }
+        viewModel.setFutureWeatherParams(WeatherUseCase.WeatherParams(cityName, "en", "metric"))
+        viewModel.forecast.observe(viewLifecycleOwner, {
+            when (it.status) {
+                Resource.Status.SUCCESS -> {
 
-
-    private fun refreshData(cityName: String) {
-
-        viewModel.getFutureWeatherByName(cityName, "en", "metric").observe(viewLifecycleOwner, {
-            it?.let {resource ->
-                when (resource.status) {
-                    Resource.Status.SUCCESS -> {
-                        adapter = RecyclerViewAdapter(it.data?.data!!)
-                        binding.rvRecyclerView.adapter = adapter
-                        futureProgressBar.visibility = View.GONE
+                    it.data?.let { forecastEntity ->
+                        val mappedList = forecastEntity.list?.let { dayInfo ->
+                            ForecastMapper().mapFrom(dayInfo)
+                        }
+                        adapter = ForecastAdapter(mappedList, this)
                     }
-                    Resource.Status.ERROR -> {
-                        Toast.makeText(this.context, "Something went wrong", Toast.LENGTH_SHORT).show()
-                        futureProgressBar.visibility = View.GONE
-                    }
-                    Resource.Status.LOADING -> {
 
-                        futureProgressBar.visibility = View.VISIBLE
+                    binding.rvRecyclerView.adapter = adapter
+                    binding.rvRecyclerView.visibility = View.VISIBLE
+                    binding.futureProgressBar.visibility = View.GONE
+                }
 
-                    }
+                Resource.Status.LOADING -> {
+                    binding.rvRecyclerView.visibility = View.GONE
+                    binding.futureProgressBar.visibility = View.VISIBLE
+                }
+
+                Resource.Status.ERROR -> {
+                    binding.futureProgressBar.visibility = View.GONE
+                    binding.rvRecyclerView.visibility = View.GONE
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
                 }
             }
         })
+
     }
 
 
@@ -91,6 +90,14 @@ class FutureWeatherFragment : Fragment() {
         super.onDestroyView()
         _binding = null
 
+    }
+
+    override fun onClickedWeather(currentDay: InfoDay) {
+        findNavController().navigate(
+            FutureWeatherFragmentDirections.actionFutureWeatherFragmentToFutureDetailWeatherFragment(
+                currentDay
+            )
+        )
     }
 
 }
