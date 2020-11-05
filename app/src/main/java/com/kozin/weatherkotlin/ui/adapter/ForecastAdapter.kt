@@ -59,8 +59,6 @@ class MyViewHolder(
         this.currentDay = item
         itemBinding.tvDateTime.text = item.getDay()
         itemBinding.tvTemper.text = item.getDayDate()
-        //itemBinding.tvTempMin.text = item.main?.getTempMinString()
-        //itemBinding.tvTempMax.text = item.main?.getTempMaxString()
         itemBinding.tvDescription.text = item.weather?.get(0)?.description
         Glide.with(itemBinding.imgForecastIcon)
             .load(item.getWeatherItemValue())
